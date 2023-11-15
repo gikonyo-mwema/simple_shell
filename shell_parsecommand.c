@@ -5,7 +5,7 @@
 char **parse_command(char *lineptr, const char *delim)
 {
 	int token_num = 0, buf = BUFFER_SIZE;
-	char **user_argv = malloc(sizeof(char *) * BUFFER_SIZE);
+	char **user_argv = malloc(sizeof(char *) * buf);
 	char *token, **temp;
 	int i;
 
@@ -22,10 +22,6 @@ char **parse_command(char *lineptr, const char *delim)
 			if (temp == NULL)
 			{
 				perror("Memory allocation error");
-				for (i = 0; i < token_num; i++)
-				{
-					free(user_argv[i]);
-				}
 				free(user_argv);
 				return (NULL);
 			}

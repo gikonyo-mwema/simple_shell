@@ -1,34 +1,34 @@
 #include "shell.h"
 
-char *allocate_env_output(char **env_p, char *lineptr, char **user_argv)
-{
-	char *env = *env_p, *temp;
-	char *env_output = NULL;
-	size_t new_length, env_length, current_length = 0, total_length = 0;
+char *allocate_env_output(char **env_p, char *lineptr, char **user_argv) {
+    char *env = *env_p;
+    char *env_output = NULL;
+    size_t current_length = 0;
+    size_t total_length = 0;
 
-	while (env != NULL)
-	{
-		env_length = strlen(env);
-		new_length = current_length + env_length + 2;
+    while (env != NULL) {
+        size_t env_length = strlen(env);
+        size_t new_length = current_length + env_length + 2;
 
-		temp = realloc(env_output, new_length);
-		if (temp == NULL)
-		{
-			perror("Memory allocation error");
-			free(env_output);
-			free(lineptr);
-			free(user_argv);
-			exit(EXIT_FAILURE);
-		}
-		env_output = temp;
-		strcat(env_output, env);
-		strcat(env_output, "\n");
+        char *temp = realloc(env_output, new_length);
+        if (temp == NULL) {
+            perror("Memory allocation error");
+            free(env_output);
+            free(lineptr);
+            free(user_argv);
+            exit(EXIT_FAILURE);
+        }
 
-		current_length = new_length - 1;
-		total_length += env_length + 1;
-		env = *(++env_p);
-	}
-	return (env_output);
+        env_output = temp;
+        strcat(env_output, env);
+        strcat(env_output, "\n");
+
+        current_length = new_length - 1;
+        total_length += env_length + 1;
+        env = *(++env_p);
+    }
+
+    return (env_output);
 }
 
 /**
@@ -81,89 +81,88 @@ int main(int ac, char **argv)
 			}
 			else
 			{
-				_print_shell(command);
-			}
-			if (strcmp(user_argv[0], "exit") == 0)
-			{
-				free(lineptr);
-				free(user_argv);
-				exit(0);
-			}
-			else if (strcmp(user_argv[0], "env") == 0)
-			{
-				env_output = allocate_env_output(environ, lineptr, user_argv);
-				_print_shell(env_output);
-				free(env_output);
-			}
-			else
-			{
-				pipe_sign = strchr(user_argv[0], '|');
-				if (pipe_sign != NULL)
+				if (strcmp(user_argv[0], "exit") == 0)
 				{
-	                        	*pipe_sign = '\0';
-		                        command_1 = user_argv[0];
-        		                command_2 = pipe_sign + 1;
-	
-        	        	        argv_1 = parse_command(command_1, " ");
-                	       		argv_2 = parse_command(command_2, " ");
-
-                     			execute_pipe(argv_1, argv_2);
-	                        	free(argv_1);
-        	          	    	 free(argv_2);
+					free(lineptr);
+					free(user_argv);
+					exit(0);
+				}
+				else if (strcmp(user_argv[0], "env") == 0)
+				{
+					env_output = allocate_env_output(environ, lineptr, user_argv);
+					_print_shell(env_output);
+					free(env_output);
 				}
 				else
-                        	{
-					redir_sign = strchr(user_argv[0], '>');
-                        		if (redir_sign != NULL)
+				{
+					pipe_sign = strchr(user_argv[0], '|');
+					if (pipe_sign != NULL)
 					{
-						*redir_sign = '\0';
-						command = user_argv[0];
-		                       		file = redir_sign + 1;
-	
-	        	                    argv_redir = parse_command(command, " ");
-        	        	            execute_redirection(argv_redir, file, 1);
-                	        	    free(argv_redir);
+	                        		*pipe_sign = '\0';
+		                        	command_1 = user_argv[0];
+	        		                command_2 = pipe_sign + 1;
+		
+        		        	        argv_1 = parse_command(command_1, " ");
+                		       		argv_2 = parse_command(command_2, " ");
+
+                     				execute_pipe(argv_1, argv_2);
+	                        		free(argv_1);
+        	          	    	 	free(argv_2);
 					}
 					else
-					{
-						result = execmd(user_argv);
-						if (result != 0)
+                	        	{
+						redir_sign = strchr(user_argv[0], '>');
+                        			if (redir_sign != NULL)
 						{
-		                                	_print_shell("Command execution failed");
+							*redir_sign = '\0';
+							command = user_argv[0];
+		                       			file = redir_sign + 1;
+	
+	        		                    argv_redir = parse_command(command, " ");
+        		        	            execute_redirection(argv_redir, file, 1);
+	                	        	    free(argv_redir);
 						}
-					}	
+						else
+						{
+							result = execmd(user_argv);
+							if (result != 0)
+							{
+			                                	_print_shell("Command execution failed");
+							}
+						}	
+					}
 				}
-			}
-		}	
-		if (strcmp(user_argv[0], "setenv") == 0)
-		{              
-                	if (user_argv[1] != NULL && user_argv[2] != NULL)
+			}	
+			if (strcmp(user_argv[0], "setenv") == 0)
+			{              
+                		if (user_argv[1] != NULL && user_argv[2] != NULL)
+				{
+	                	    my_setenv(user_argv[1], user_argv[2], "1");
+                		}
+				else
+				{
+                    			fprintf(stderr, "%s: setenv: Too few arguments.\n", argv[0]);
+                		}
+            		} 
+			else if (strcmp(user_argv[0], "unsetenv") == 0)
 			{
-	                    my_setenv(user_argv[1], user_argv[2], "1");
-                	}
-			else
-			{
-                    		fprintf(stderr, "%s: setenv: Too few arguments.\n", argv[0]);
-                	}
-            	} 
-		else if (strcmp(user_argv[0], "unsetenv") == 0)
-		{
-                	if (user_argv[1] != NULL)
-			{
-                   		 my_unsetenv(user_argv[1]);
-               		 }
-			else
-			{
-                	    fprintf(stderr, "%s: unsetenv: Too few arguments.\n", argv[0]);
-                	}
-            	}
+                		if (user_argv[1] != NULL)
+				{
+                   			 my_unsetenv(user_argv[1]);
+               			 }
+				else
+				{
+                	   		fprintf(stderr, "%s: unsetenv: Too few arguments.\n", argv[0]);
+                		}
+            		}
         
-		free(lineptr);
-		for (i = 0; user_argv[i] != NULL; i++)
-		{
-			free(user_argv[i]);
+			free(lineptr);
+			for (i = 0; user_argv[i] != NULL; i++)
+			{
+				free(user_argv[i]);
+			}
+			free(user_argv);
 		}
-		free(user_argv);
 	}
 	return (0);
 }
