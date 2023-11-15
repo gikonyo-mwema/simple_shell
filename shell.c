@@ -2,28 +2,32 @@
 
 char *allocate_env_output(char **env_p, char *lineptr, char **user_argv)
 {
-	char *env = *env_p;
+	char *env = *env_p, *temp;
 	char *env_output = NULL;
-	size_t env_length;
-	size_t total_length = 0;
+	size_t new_length, env_length, current_length = 0, total_length = 0;
 
 	while (env != NULL)
 	{
 		env_length = strlen(env);
-		env_output = realloc(env_output, total_length + env_length + 2);
-		if (env_output == NULL)
+		new_length = current_length + env_length + 2;
+
+		temp = realloc(env_output, new_length);
+		if (temp == NULL)
 		{
 			perror("Memory allocation error");
+			free(env_output);
+			free(lineptr);
+			free(user_argv);
 			exit(EXIT_FAILURE);
 		}
+		env_output = temp;
 		strcat(env_output, env);
 		strcat(env_output, "\n");
 
+		current_length = new_length - 1;
 		total_length += env_length + 1;
 		env = *(++env_p);
 	}
-	free(lineptr);
-	free(user_argv);
 	return (env_output);
 }
 
@@ -81,12 +85,15 @@ int main(int ac, char **argv)
 			}
 			if (strcmp(user_argv[0], "exit") == 0)
 			{
-				break;
+				free(lineptr);
+				free(user_argv);
+				exit(0);
 			}
 			else if (strcmp(user_argv[0], "env") == 0)
 			{
 				env_output = allocate_env_output(environ, lineptr, user_argv);
 				_print_shell(env_output);
+				free(env_output);
 			}
 			else
 			{

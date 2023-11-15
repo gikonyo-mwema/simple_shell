@@ -21,6 +21,7 @@ char **parse_command(char *lineptr, const char *delim)
 			temp = realloc(user_argv, sizeof(char *) * (buf * 2));
 			if (temp == NULL)
 			{
+				perror("Memory allocation error");
 				for (i = 0; i < token_num; i++)
 				{
 					free(user_argv[i]);
@@ -34,6 +35,7 @@ char **parse_command(char *lineptr, const char *delim)
         	user_argv[token_num] = strdup(token);
 		if(user_argv[token_num] == NULL)
 		{
+			perror("Memory allocation error");
 			for (i = 0; i < token_num; i++)
 			{
 				free(user_argv[i]);

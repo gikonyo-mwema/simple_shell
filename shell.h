@@ -46,4 +46,5 @@ extern char **environ;
 int my_setenv(const char *name, const char *value, char *overwrite);
 int my_unsetenv(const char *name);
 
+ssize_t custom_getline(int fd, char **line);
 #endif
