@@ -19,7 +19,8 @@ char *get_command(void)
 	/* Check if the line is empty or contains only whitespace */
 	for (i = 0; lineptr[i]; i++)
 	{
-		if (lineptr[i] != ' ' && lineptr[i] != '\t' && lineptr[i] != '\n' && lineptr[i] != '\r')
+		if (lineptr[i] != ' ' && lineptr[i] != '\t' &&
+			lineptr[i] != '\n' && lineptr[i] != '\r')
 		{
 			/* Line contains a not-whitespace character, so NOT empty */
 			break;

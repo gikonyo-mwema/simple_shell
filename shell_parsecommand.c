@@ -1,7 +1,12 @@
 #include "shell.h"
 
 #define BUFFER_SIZE 1024
-
+/**
+ * parse_command - Parses a command line into an array of arguments
+ * @lineptr: Pointer to the command line to be parsed
+ * @delim: Delimiter for tokenizing the command line
+ * Return: array of string
+ */
 char **parse_command(char *lineptr, const char *delim)
 {
 	int token_num = 0, buf = BUFFER_SIZE;
@@ -43,6 +48,5 @@ char **parse_command(char *lineptr, const char *delim)
 		token = strtok(NULL, delim);
 	}
 	user_argv[token_num] = NULL;
-
 	return (user_argv);
 }

@@ -1,9 +1,8 @@
 #include "shell.h"
-
 /**
  * get_location - generate the path for each command
  * @command: A pointer to a string representing the command to be located.
- * Return: A dynamically allocated string containing the full path to the command if found,
+ * Return: string containing the full path to the command if found,
  * or NULL if the command is not found.
  */
 char *get_location(char *command)
@@ -16,7 +15,6 @@ char *get_location(char *command)
 	{
 		return (NULL);
 	}
-	
 	if (strchr(command, '/') != NULL)
 	{
 		if (access(command, X_OK) == 0)
@@ -28,7 +26,7 @@ char *get_location(char *command)
 	path = strdup(path_env);
 	if (path == NULL)
 	{
-		return NULL;
+		return (NULL);
 	}
 	token = strtok(path, ":");
 	while (token != NULL)

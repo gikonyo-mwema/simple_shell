@@ -34,7 +34,7 @@ int my_setenv(const char *name, const char *value, char *overwrite)
 }
 /**
  * my_unsetenv - Unsets/removes an environment variable
- * name: environment variable
+ * @name: environment variable
  * Return: 0 sucess, -1 otherwise
  */
 int my_unsetenv(const char *name)
