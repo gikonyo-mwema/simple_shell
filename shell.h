@@ -51,6 +51,17 @@ char *get_command(void);
 
 char *allocate_env_output(char **env_p, char *lineptr, char **user_argv);
 int process_command(char **user_argv, char *lineptr, char **env_p);
+
+int create_pipe(int pipefd[2]);
+void handle_child_processes(int pipefd[2], char **argv_1, char **argv_2);
+void execute_pipe(char **argv_1, char **argv_2);
+void setup_pipe(int pipefd[2], char **argv);
+void execute_redirection(char **argv, char *file, int direction);
+void setup_redirection(char **argv, char *file, int direction);
+int execmd(char **argv);
+void execute_child(char **argv, char *command);
+
+
 void execute_redirection(char **argv, char *file, int direction);
 void execute_pipe(char **argv_1, char **argv_2);
 
