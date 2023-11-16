@@ -22,6 +22,12 @@ typedef struct
 	int err_num;
 } info_t;
 
+void execute_external_command(char **user_argv);
+void handle_builtin_commands(char **user_argv, char *lineptr);
+void execute_command(char *lineptr, const char *delim);
+int is_builtin_command(const char *command);
+void free_resources(char **user_argv, char *lineptr);
+
 int _erratoi(const char *str);
 int _myexit(info_t *info);
 int _mycd(info_t *info);
