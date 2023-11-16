@@ -1,62 +1,81 @@
 #include "shell.h"
+/**
+ * allocate_env_output - allocates memory for environment variables output.
+ * @env_p: pointer to environment variables
+ * @lineptr: pointer to command line
+ * @user_argv: Array of user arguments
+ * Return: pointer to the environment output
+ */
+char *allocate_env_output(char **env_p, char *lineptr, char **user_argv)
+{
+	char *env = *env_p;
+	char *env_output = NULL;
+	size_t current_length = 0;
+	size_t total_length = 0;
 
-char *allocate_env_output(char **env_p, char *lineptr, char **user_argv) {
-    char *env = *env_p;
-    char *env_output = NULL;
-    size_t current_length = 0;
-    size_t total_length = 0;
-
-    while (env != NULL)
+	while (env != NULL)
 	{
-        size_t env_length = strlen(env);
-        size_t new_length = current_length + env_length + 2;
+		size_t env_length = strlen(env);
+		size_t new_length = current_length + env_length + 2;
+	char *temp = realloc(env_output, new_length);
 
-        char *temp = realloc(env_output, new_length);
-        if (temp == NULL) {
-            perror("Memory allocation error");
-            free(env_output);
-            free(lineptr);
-            free(user_argv);
-            exit(EXIT_FAILURE);
-        }
+		if (temp == NULL)
+		{
+			perror("Memory allocation error");
+			free(env_output);
+			free(lineptr);
+			free(user_argv);
+			exit(EXIT_FAILURE);
+		}
 
-        env_output = temp;
-        strcat(env_output, env);
-        strcat(env_output, "\n");
+		env_output = temp;
+		strcat(env_output, env);
+		strcat(env_output, "\n");
 
-        current_length = new_length - 1;
-        total_length += env_length + 1;
-        env = *(++env_p);
-    }
+		current_length = new_length - 1;
+		total_length += env_length + 1;
+		env = *(++env_p);
+	}
 
-    return (env_output);
+	return (env_output);
 }
+/**
+ * main - entry point
+ * Return: 0
+ */
+int main(void)
+{
+	char *prompt = "($) ";
+	const char *delim = " \n";
+	char *lineptr = NULL;
 
-int main(void) {
-    char *prompt = "($) ";
-    const char *delim = " \n";
-    char *lineptr = NULL;
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+		{
+			print_prompt(prompt);
+		}
 
-    while (1) {
-        if (isatty(STDIN_FILENO)) {
-            print_prompt(prompt);
-        }
+		lineptr = get_command();
+		if (lineptr == NULL)
+		{
+			break;
+		}
 
-        lineptr = get_command();
-        if (lineptr == NULL) {
-            break;
-        }
+		execute_command(lineptr, delim);
+	}
 
-        execute_command(lineptr, delim);
-    }
-
-    return 0;
+	return (0);
 }
-
+/**
+ * execute_external_command - executes external command if path is found
+ * @user_argv: array of user arguments
+ * Return: void
+ */
 void execute_external_command(char **user_argv)
 {
 	char *executable_path;
-	
+
 	executable_path = get_location(user_argv[0]);
 	if (executable_path != NULL)
 	{
@@ -65,11 +84,15 @@ void execute_external_command(char **user_argv)
 	}
 	else
 	{
-        	_print_shell("command not found");
+		_print_shell("command not found");
 	}
 }
-
-
+/**
+ * handle_builtin_commands - handles built-in commands
+ * @user_argv: array of user arguments
+ * @lineptr: pointer to the command line
+ * Return: void
+ */
 void handle_builtin_commands(char **user_argv, char *lineptr)
 {
 	char *env_output;
@@ -108,44 +131,61 @@ void handle_builtin_commands(char **user_argv, char *lineptr)
 		}
 	}
 }
+/**
+ * execute_command - Executes the given command
+ * @lineptr: pointer to the command line
+ * @delim: delimiter for parsing command
+ * Return: void
+ */
+void execute_command(char *lineptr, const char *delim)
+{
+	int i = 0;
+	char *token = NULL;
+	char **user_argv = parse_command(lineptr, delim);
 
-
-void execute_command(char *lineptr, const char *delim) {
-    int i = 0;
-    char *token = NULL;
-    char **user_argv = parse_command(lineptr, delim);
-
-    token = strtok(lineptr, delim);
-    while (token != NULL) {
-        user_argv[i] = strdup(token);
-        token = strtok(NULL, delim);
-        i++;
-    }
-    user_argv[i] = NULL;
-
-    if (user_argv[0] != NULL)
+	token = strtok(lineptr, delim);
+	while (token != NULL)
 	{
-        if (is_builtin_command(user_argv[0]))
-	{
-            handle_builtin_commands(user_argv, lineptr);
-        }
-	else
-	{
-            execute_external_command(user_argv);
-        }
-    }
+		user_argv[i] = strdup(token);
+		token = strtok(NULL, delim);
+		i++;
+	}
+	user_argv[i] = NULL;
 
-    free_resources(user_argv, lineptr);
+	if (user_argv[0] != NULL)
+	{
+		if (is_builtin_command(user_argv[0]))
+		{
+			handle_builtin_commands(user_argv, lineptr);
+		}
+		else
+		{
+			execute_external_command(user_argv);
+		}
+	}
+
+	free_resources(user_argv, lineptr);
 }
-
-int is_builtin_command(const char *command) {
-    if (strcmp(command, "exit") == 0 || strcmp(command, "env") == 0 ||
-        strcmp(command, "setenv") == 0 || strcmp(command, "unsetenv") == 0) {
-        return 1;
-    }
-    return 0;
+/**
+ * is_builtin_command - checks if a given command is built-in command
+ * @command: command to check
+ * Return: 1 for built-in, 0 otherwise
+ */ 
+int is_builtin_command(const char *command)
+{
+	if (strcmp(command, "exit") == 0 || strcmp(command, "env") == 0 ||
+			strcmp(command, "setenv") == 0 || strcmp(command, "unsetenv") == 0)
+	{
+		return (1);
+	}
+	return (0);
 }
-
+/**
+ * free_resources - Frees allocated resources for command execution
+ * @user_argv: Array of user argument
+ * @lineptr: Pointer to the command line
+ * Return: void
+ */
 void free_resources(char **user_argv, char *lineptr)
 {
 	int i;
@@ -153,7 +193,7 @@ void free_resources(char **user_argv, char *lineptr)
 	free(lineptr);
 	for (i = 0; user_argv[i] != NULL; i++)
 	{
-        	free(user_argv[i]);
+		free(user_argv[i]);
 	}
 	free(user_argv);
 }

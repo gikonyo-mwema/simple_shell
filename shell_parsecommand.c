@@ -25,11 +25,11 @@ char **parse_command(char *lineptr, const char *delim)
 				free(user_argv);
 				return (NULL);
 			}
-		        user_argv = temp;
+			user_argv = temp;
 			buf *= 2;
 		}
-        	user_argv[token_num] = strdup(token);
-		if(user_argv[token_num] == NULL)
+		user_argv[token_num] = strdup(token);
+		if (user_argv[token_num] == NULL)
 		{
 			perror("Memory allocation error");
 			for (i = 0; i < token_num; i++)

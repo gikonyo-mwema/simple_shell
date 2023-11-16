@@ -53,7 +53,7 @@ void execute_pipe(char **argv_1, char **argv_2)
 			}
 		}
 		else
-		{	
+		{
 			close(pipefd[0]);
 			close(pipefd[1]);
 			wait(NULL);
@@ -64,7 +64,7 @@ void execute_pipe(char **argv_1, char **argv_2)
 /**
  * execute_redirection - redirections handling
  * @argv: user command
- * @file: file 
+ * @file: file
  * @direction: direction
  * Return: void
  */
