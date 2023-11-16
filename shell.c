@@ -87,6 +87,19 @@ int main(int ac, char **argv)
 					free(user_argv);
 					exit(0);
 				}
+				else if (strcmp(user_argv[0], "ls") == 0)
+				{
+					executable_path = get_location(user_argv[0]);
+					if (executable_path != NULL)
+					{
+						execmd(user_argv);
+						free(executable_path);
+					}
+					else
+					{
+						printf("ls command not found\n");
+					}
+				}
 				else if (strcmp(user_argv[0], "env") == 0)
 				{
 					env_output = allocate_env_output(environ, lineptr, user_argv);
