@@ -33,9 +33,9 @@ struct info
 
 typedef struct info info_t;
 
-void execute_external_command(char **user_argv);
+/*void execute_external_command(char **user_argv);*/
 void handle_builtin_commands(char **user_argv, char *lineptr);
-void execute_command(char *lineptr, const char *delim);
+/*void execute_command(char *lineptr, const char *delim);*/
 int is_builtin_command(const char *command);
 void free_resources(char **user_argv, char *lineptr);
 
@@ -60,6 +60,9 @@ void execute_redirection(char **argv, char *file, int direction);
 void setup_redirection(char **argv, char *file, int direction);
 int execmd(char **argv);
 void execute_child(char **argv, char *command);
+/* improved */
+void execute_external_command(char **user_argv, const char *program_name);
+void execute_command(char *lineptr, const char *delim, const char *program_name);
 
 
 void execute_redirection(char **argv, char *file, int direction);
@@ -75,4 +78,12 @@ int my_setenv(const char *name, const char *value, char *overwrite);
 int my_unsetenv(const char *name);
 
 ssize_t custom_getline(int fd, char **line);
+
+int contains_redirection_or_pipe(char **user_argv, const char *program_name);
+int contains_pipe(char **user_argv, const char *program_name);
+char **extract_first_command(char **user_argv, const char *program_name);
+char **extract_second_command(char **user_argv, const char *program_name);
+char *extract_redirection_file(char **user_argv, const char *program_name);
+int determine_redirection_direction(char **user_argv, const char *program_name);
+
 #endif
