@@ -44,7 +44,7 @@ void execute_external_command(char **user_argv)
 	}
 	else
 	{
-		_print_shell("command not found");
+		fprintf(stderr, "command not found.\n");
 	}
 }
 /**
