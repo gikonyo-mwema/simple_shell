@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 /**
  * allocate_env_output - allocates memory for environment variables output.
  * @env_p: pointer to environment variables

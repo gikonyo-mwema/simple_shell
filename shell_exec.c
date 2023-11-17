@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 /**
 * execute_child - executes the child process
 * @argv: command argument child process
@@ -21,27 +21,24 @@ exit(EXIT_FAILURE);
 */
 int execmd(char **argv)
 {
+pid_t pid = fork();
 if (!argv || !argv[0])
 {
 _print_shell("Invalid command or arguments\n");
 return (-1);
 }
-pid_t pid = fork();
+/*pid_t pid = fork();*/
 
 if (pid == -1)
-{
 perror("fork");
 return (-1);
-}
 if (pid == 0)
 {
 char *command = (strchr(argv[0], '/') != NULL) ?
 		argv[0] : get_location(argv[0]);
 if (!command)
-{
 _print_shell("Command not found\n");
 return (-1);
-}
 if (access(command, X_OK) == 0)
 execute_child(argv, command);
 else
@@ -52,7 +49,6 @@ exit(EXIT_FAILURE);
 else
 {
 int status;
-
 waitpid(pid, &status, 0);
 if (WIFEXITED(status))
 {
