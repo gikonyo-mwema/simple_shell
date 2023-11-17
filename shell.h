@@ -45,5 +45,8 @@ extern char **environ;
 /*my_unsetev*/
 int my_setenv(const char *name, const char *value, char *overwrite);
 int my_unsetenv(const char *name);
+/*exit_built_in*/
+void exit_shell(void);
 
 #endif
+
