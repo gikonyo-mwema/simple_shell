@@ -55,19 +55,9 @@ void execute_external_command(char **user_argv)
  */
 void execute_command(char *lineptr, const char *delim)
 {
-	int i = 0;
-	char *token = NULL;
-	char **user_argv = parse_command(lineptr, delim);
+	char **user_argv;
 
-	token = strtok(lineptr, delim);
-	while (token != NULL)
-	{
-		user_argv[i] = strdup(token);
-		token = strtok(NULL, delim);
-		i++;
-	}
-	user_argv[i] = NULL;
-
+	user_argv = parse_command(lineptr, delim);
 	if (user_argv[0] != NULL)
 	{
 		if (is_builtin_command(user_argv[0]))
