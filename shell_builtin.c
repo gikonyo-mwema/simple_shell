@@ -1,4 +1,29 @@
 #include "shell.h"
+#include <dirent.h>
+/**
+ * my_ls - handles builtin ls command
+ * Return: directory
+ */
+void my_ls(void)
+{
+	DIR *directory;
+	struct dirent *file;
+
+	directory = opendir(".");
+	if (directory == NULL)
+	{
+		perror("Unable to open directory");
+		return;
+	}
+
+	while ((file = readdir(directory)) != NULL)
+	{
+		printf("%s\n", file->d_name);
+	}
+
+	closedir(directory);
+}
+
 /**
  * handle_builtin_commands - handles built-in commands
  * @user_argv: array of user arguments
@@ -42,4 +67,9 @@ void handle_builtin_commands(char **user_argv, char *lineptr)
 			_print_shell(" unsetenv: Too few arguments.");
 		}
 	}
+	else if (strcmp(user_argv[0], "ls") == 0)
+	{
+		my_ls();
+	}
+
 }

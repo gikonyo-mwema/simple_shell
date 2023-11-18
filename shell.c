@@ -1,14 +1,18 @@
 #include "shell.h"
 /**
- * main - entry point
+ * main - main calling function
+ * @argc: no of arguments
+ * @argv: array of arguments
  * Return: 0
  */
-int main(void)
+int main(int argc, char *argv[])
 {
 	char *prompt = "($) ";
 	const char *delim = " \n";
 	char *lineptr = NULL;
+	const char *program_name = argv[0];
 
+	(void)argc;
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
@@ -22,7 +26,7 @@ int main(void)
 			break;
 		}
 
-		execute_command(lineptr, delim);
+		execute_command(lineptr, delim, program_name);
 	}
 
 	return (0);
@@ -30,9 +34,10 @@ int main(void)
 /**
  * execute_external_command - executes external command if path is found
  * @user_argv: array of user arguments
+ * @program_name: name of program
  * Return: void
  */
-void execute_external_command(char **user_argv)
+void execute_external_command(char **user_argv, const char *program_name)
 {
 	char *executable_path;
 
@@ -44,30 +49,23 @@ void execute_external_command(char **user_argv)
 	}
 	else
 	{
-		_print_shell("command not found");
+		fprintf(stderr, "%s: command not found.\n", program_name);
 	}
 }
+
 /**
  * execute_command - Executes the given command
  * @lineptr: pointer to the command line
  * @delim: delimiter for parsing command
+ * @program_name: name of program
  * Return: void
  */
-void execute_command(char *lineptr, const char *delim)
+void execute_command(char *lineptr, const char *delim,
+			const char *program_name)
 {
-	int i = 0;
-	char *token = NULL;
-	char **user_argv = parse_command(lineptr, delim);
+	char **user_argv;
 
-	token = strtok(lineptr, delim);
-	while (token != NULL)
-	{
-		user_argv[i] = strdup(token);
-		token = strtok(NULL, delim);
-		i++;
-	}
-	user_argv[i] = NULL;
-
+	user_argv = parse_command(lineptr, delim);
 	if (user_argv[0] != NULL)
 	{
 		if (is_builtin_command(user_argv[0]))
@@ -76,12 +74,13 @@ void execute_command(char *lineptr, const char *delim)
 		}
 		else
 		{
-			execute_external_command(user_argv);
+			execute_external_command(user_argv, program_name);
 		}
 	}
 
 	free_resources(user_argv, lineptr);
 }
+
 /**
  * is_builtin_command - checks if a given command is built-in command
  * @command: command to check
