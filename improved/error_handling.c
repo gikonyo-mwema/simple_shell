@@ -6,5 +6,5 @@
  */
 void error_handling(const char *msg)
 {
-    perror(msg);
+	perror(msg);
 }

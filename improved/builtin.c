@@ -6,11 +6,12 @@
  */
 void env_inbuilt(char **args)
 {
-    char **current;
-    for (current = environ; *current; current++)
-    {
-        printf("%s\n", *current);
-    }
+	char **current;
+
+	for (current = environ; *current; current++)
+	{
+		printf("%s\n", *current);
+	}
 }
 
 /**
@@ -19,5 +20,5 @@ void env_inbuilt(char **args)
  */
 void exit_inbuilt(char **args)
 {
-    exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }
