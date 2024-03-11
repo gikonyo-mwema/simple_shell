@@ -11,13 +11,13 @@
 
 extern char **environ;
 
-#define MAX_COMMANDS 64;
+#define MAX_COMMANDS 64
 
 char *read_input();
-char *parse_input(char *pstring, char *args[]);
-void execute_command(char *command, char *args[], char *pstring);
+char **parse_input(char *pstring);
+int execute_command(char *command, char *args[], char *pstring);
 char *find_executable(char *path, char *exec_path, char *command, struct stat *stats);
-void run_command(char *exec_path, char *args[], char *pstring);
+int run_command(char *exec_path, char *args[], char *pstring);
 void env_inbuilt(char **args);
 void exit_inbuilt(char **args);
 void error_handling(const char *msg);
@@ -25,5 +25,6 @@ void free_memory(char *pstring);
 void setenv_inbuilt(char *args[]);
 void cd_builtin(char *args[]);
 void unsetenv_builtin(char *args[]);
+int check_builtin_commands(char *command, char *args[], char *pstring);
 
 #endif /* SHELL_H*/

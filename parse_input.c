@@ -6,7 +6,7 @@
  * @args: Array of argument string
  * Return: Pointer to the command string
  */
-char **parse_input(char *pstring, char *args[])
+char **parse_input(char *pstring)
 {
 	char *token;
 	int i = 0;
@@ -24,7 +24,7 @@ char **parse_input(char *pstring, char *args[])
 		i++;
 		token = strtok(NULL, " ;&&||");
 	}
-	commands = NULL;
+	commands[i] = NULL;
 
 	return (commands);
 }

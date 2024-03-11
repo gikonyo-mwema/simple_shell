@@ -7,9 +7,11 @@
  */
 void unsetenv_builtin(char *args[])
 {
+	char *msg = "unsetenv: Syntax Error\n";
+
 	if (args[1] == NULL)
 	{
-		fprintf(stderr, "unsetenv: Syntax Error\n);
+		write(STDOUT_FILENO, msg, strlen(msg));
 		return;
 	}
 

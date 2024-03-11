@@ -19,7 +19,7 @@ char *find_executable(char *path, char *exec_path, char *command,
 		sprintf(exec_path, "%s/%s", path_dir, command);
 		if (stat(exec_path, stats) == 0)
 		{
-			printf("Executable found at %s\n", exec_path);
+			/*printf("Executable found at %s\n", exec_path);*/
 			break;
 		}
 		path_dir = strtok(NULL, ":");

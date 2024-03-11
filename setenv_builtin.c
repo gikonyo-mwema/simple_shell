@@ -8,9 +8,12 @@
  */
 void setenv_inbuilt(char *args[])
 {
+	const char *msg;
+
 	if (args[1] == NULL || args[2] == NULL)
 	{
-		fprintf(stderr, "setenv: Syntax Error\n");
+		msg = "setenv: Syntax Error\n";
+		write(STDERR_FILENO, msg, strlen(msg));
 		return;
 	}
 

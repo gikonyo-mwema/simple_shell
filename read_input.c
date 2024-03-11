@@ -13,13 +13,18 @@ char *read_input()
 	const char *prompt;
 	ssize_t prompt_message;
 
-	/* Prompt */
-	prompt = "$ ";
-	prompt_message = write(1, prompt, strlen(prompt));
-	if (prompt_message == -1)
+	/* Check if the shell is interactive */
+	if (isatty(STDIN_FILENO))
 	{
-		perror("Error writing to stdout");
-		return (NULL);
+
+		/* Prompt */
+		prompt = "$ ";
+		prompt_message = write(1, prompt, strlen(prompt));
+		if (prompt_message == -1)
+		{
+			perror("Error writing to stdout");
+			return (NULL);
+		}
 	}
 
 	getline_status = getline(&pstring, &size, stdin);

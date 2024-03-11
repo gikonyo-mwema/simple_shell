@@ -12,7 +12,8 @@ void env_inbuilt(char **args __attribute__((unused)))
 
 	for (current = environ; *current; current++)
 	{
-		printf("%s\n", *current);
+		write(STDOUT_FILENO, *current, strlen(*current));
+		write(STDOUT_FILENO, "\n", 1);
 	}
 }
 
