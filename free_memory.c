@@ -6,8 +6,8 @@
  */
 void free_memory(char *pstring)
 {
-    if (pstring != NULL)
-    {
-        free(pstring);
-    }
+	if (pstring != NULL)
+	{
+		free(pstring);
+	}
 }
